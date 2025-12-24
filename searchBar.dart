@@ -8,15 +8,19 @@ class Searchbar extends StatefulWidget {
       this.prefixIconColor = Colors.red,
         required this.onChanged,
         this.borderRadius = 12,
-        this.fillColor=Colors.white
+        this.fillColor=Colors.white,
+        required this.delete,
+        this.keyboardType
       });
 
   TextEditingController? controller;
   String hintText;
   Color prefixIconColor;
-  Function(String) onChanged;
+  Function(String?) onChanged;
+  Function(bool) delete;
   double borderRadius;
   Color fillColor;
+  TextInputType? keyboardType;
 
   @override
   State<Searchbar> createState() => _SearchbarState();
@@ -55,8 +59,10 @@ class _SearchbarState extends State<Searchbar> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _controller,
-
-      onChanged:widget.onChanged,
+      keyboardType: widget.keyboardType,
+      onChanged:(String? data){
+        widget.onChanged(data);
+      },
       decoration: InputDecoration(
         hintText: widget.hintText,
         prefixIcon: Icon(
@@ -65,7 +71,9 @@ class _SearchbarState extends State<Searchbar> {
         ),
         suffixIcon: _hasText?IconButton(
           onPressed: () {
+
             _controller.clear();
+            widget.delete(true);
             setState(() {
               _hasText = false;
             });
